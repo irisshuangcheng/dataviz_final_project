@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- set styles on the top -->
+    <style>
+        .chart-container {
+            max-width: 800px;
+            /* border: 2px solid red; */
+            margin: 0 auto;
+            /* margin: auto auto; */
+            /* auto centers the div */
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        }
+
+        h1 {
+            margin-top: 30px;
+            margin-left: 0px;
+            margin-bottom: 10;
+            font-size: 30px;
+            /* border: 2px solid green; */
+        }
+
+        h2 {
+            margin-left: 0px;
+            margin-bottom: 10px;
+            margin-top: 0;
+            font-size: 17px;
+            
+            /* border: 2px solid green; */
+        }
+
+        h3{
+            margin-left: 0px;
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-size: 17px;
+            font-weight: 4;
+            color: rgb(202, 75, 75);
+        }
+        .x .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .y .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .x .domain {
+            display: none;
+        }
+
+        .y .domain {
+            display: none;
+        }
+
+        .y .tick text {
+            font-size: 14px;
+            fill: rgb(116, 116, 116);
+            
+        }
+
+        .x .tick text {
+            font-size: 14px;
+            fill: #333;
+        }
+
+        p {
+            max-width: 550px;
+            margin-right: 100px;
+            margin-left: 0px;
+            margin-top: 30px;
+            margin-bottom: 0px;
+            font-size: 17px;
+            font-weight: 5;
+            font-family:'Times New Roman', Times, serif;
+            font-style: normal;
+            /* background-color: rgba(0,0,0,.06); */
+            color: dimgray;
+        }
+
+        .grid-example {
+            /* display: grid; */
+            /* grid-template-columns: auto auto auto; */
+            row-gap: 50px;
+            column-gap: 50px;
+        }
+
+        .img{
+            width: 100%;
+            /* height: 100%; */
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="chart-container">
+        <h1 class="headline">
+            How are Covid-19 Vaccinations Going Worldwide
+        </h1>
+        <!-- <h3 class= "headline2">
+            (Charts show representative countries and world average)
+         </h3> -->
+        <h2 class= "headline2">
+           Who received vaccinations ? 
+        </h2>
+        <h3>
+            Updated on May 26 
+        </h3>
+        <!-- <p>
+            More than 1.7 billion vaccine doeses have been administered worldwide, but there is already a stark gap between vaccinations in different countries
+        </p> -->
+        <ul>
+            <li><a href="p1 world/index.html">World Summary: Total vaccinations & world map of vaccinations</a></li>
+        </ul>
+
+        <ul>
+            <li><a href="p2 multi/index.html">Tracking vaccinations rate by country</a></li>
+        </ul>
+
+        <ul>
+            <li><a href="p6 bar/index.html">At least one dose VS. Fully vaccinated</a></li>
+        </ul>
+
+        <ul>
+            <li><a href="p3 bubble/index.html">Country difference: share of people who get vaccinated by country (Interactive bubble) </a></li>
+        </ul>
+
+        <ul>
+            <li><a href="p5 manylines/index.html">Country difference: Share of people who get vaccinated by country (Interactive lines) </a></li>
+        </ul>
+
+        <ul>
+            <li><a href="p4 usa map/index.html">U.S.A: How vaccinations are going in the United States? (Interactive map)</a></li>
+        </ul>
+
+
+
+        <p>Source: Data from Our World in Data and New York Times; Made by Iris Cheng</p>
+        
+    </div>
+</body>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+
+<script>
+
+
+</script>
+
+
+
+

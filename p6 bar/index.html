@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .chart-container {
+            max-width: 800px;
+            /* border: 3px solid red; */
+            margin: 0 auto;
+            /* auto centers the div */
+            font-family: 'Times New Roman', Times, serif
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        
+        }
+
+
+        h1 {
+            margin-left: 0px;
+            font-size: 20px;
+
+        }
+
+        h2 {
+            margin-left: 0px;
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+
+        p{
+            color: dimgray;
+            margin-top: -50px;
+        }
+        
+        .x .domain {
+            display: none;
+        }
+
+        .y .domain {
+            display: none;
+        }
+
+        .y .tick text {
+            font-size: 14px;
+            fill: rgb(133, 133, 133);
+
+        }
+
+        .x .tick text {
+            font-size: 14px;
+            fill:rgb(133, 133, 133);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chart-container">
+        <h1 class="headline">
+            Share of people who received at least one dose of COVID-19 Vaccine 
+         </h1>
+         <h2 >
+           Updated on May 26, 2021
+         </h2>
+
+        <svg width="800px" height="500px">
+        </svg>
+
+        <p>Source: Data from Our World in Data. Made by Iris Cheng</p>
+    </div>
+</body>
+
+<!-- add your script blocks at the end -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+
+<script>
+    console.log(d3)
+    let width = 600;
+    let height = 400;
+
+    // let colors3day = ["#feedde", "#feedde", "#feedde", "#feb078", "#f1605d", "#b73779", "#721f81", "#2c115f"];
+    // let colors3day = ["#feedde", "#feb078"];
+    let colors3day = ["#69b3a2", "#c3f0e5"];
+
+    let color = d3.scaleOrdinal()
+        .domain(["percent_fully", "left"])
+        .range(colors3day)
+        .unknown("#ccc")
+
+    let svg = d3.select("body").select("svg")
+
+    let margin = { top: 0, right: 0, bottom: 0, left: 0 };
+
+    // d3.csv("covid_pie.csv").then(function (data) {
+    //     console.log("loaded")
+    //     console.log({ data })
+
+    d3.csv("covid_pie.csv").then(function (raw) {
+        console.log("loaded")
+        console.log({ raw })
+
+        let data = raw.filter(d => d.location == "World");
+     
+        console.log({ data })
+
+        // data.forEach(function (row) {
+        //     row.date = new Date(row.date + "T00:00")
+        //     row.percent_vaccinated = +row.percent_vaccinated
+        // })
+
+        data.forEach(d => {
+            d.date = new Date(d.date + "T00:00") 
+            d.percent_fully= +d.percent_fully
+            d.left = +d.left
+        })
+
+        // //     //https://github.com/d3/d3-shape#stacks
+        let series = d3.stack()
+            .keys(["percent_fully", "left"])
+            (data)
+
+        console.log({ series })
+
+        let x = d3.scaleBand()
+            .domain(data.map(d => d["date"]))
+            .range([0, width])
+            .paddingInner(0.05)
+
+        let y = d3.scaleLinear()
+            .domain([0, 0.12])
+            .rangeRound([height - margin.bottom, margin.top])
+
+        let group = svg.append("g")
+            .selectAll("g")
+            .data(series)
+            .join("g")
+            .attr("fill", d => color(d.key))
+
+        let bars = group
+            .selectAll("rect")
+            .data(d => d)
+            .join("rect")
+            .attr("x", (d, i) => x(d.data.date))
+            .attr("width", x.bandwidth())
+            .attr("y", d => y(d[1]))
+            .attr("height", d => y(d[0]) - y(d[1]))
+
+        let xTickSettings = d3.axisBottom(x)
+            .tickValues([new Date(2020, 11, 20), new Date(2021, 02, 16), new Date(2021, 04, 26)])
+            .tickSize(-5)
+            .tickPadding(12)
+            .tickFormat(d3.timeFormat("%B %d %Y"))
+            // .tickFormat((d, i) => {
+            //     console.log(d, i)
+            //     if (i % 10 == 0) {
+            //         return d3.timeFormat("%b. %d, %Y")(new Date(d)) ///https://github.com/d3/d3-time-format
+            //     } else {
+            //         return ""
+            //     }
+            // })
+
+        let xAxis = svg.append("g")
+            .attr("class", "y axis")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(xTickSettings)
+            // .style("text-anchor", "start")
+
+        let yTickSettings = d3.axisLeft(y)
+            .tickValues([.05, 0.1])
+            .tickSize(-width)
+            .tickPadding(4)
+            .tickFormat(d3.format(".0%"))
+
+        let yAxis = svg.append("g")
+            .attr("class", "y axis")
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(yTickSettings)
+            .style("stroke-dasharray",("3,3"))
+        
+           
+        // Label legend
+        svg.append("circle").attr("cx",10).attr("cy",130).attr("r", 6).style("fill", "#69b3a2")
+        svg.append("circle").attr("cx",10).attr("cy",100).attr("r", 6).style("fill", "#c3f0e5")
+        svg.append("text").attr("x", 30).attr("y", 130).text("Fully vaccinated").style("font-size", "15px").attr("alignment-baseline","middle")
+        svg.append("text").attr("x", 30).attr("y", 100).text("At least one dose").style("font-size", "15px").attr("alignment-baseline","middle")
+
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 0)
+            .attr("y", 35)
+            .text("Share of people vaccinated: world average")
+            .style("fill", "dimgrey")
+            .style("font-size", "17px")
+        
+
+    })
+
+</script>

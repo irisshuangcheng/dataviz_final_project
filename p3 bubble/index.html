@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <meta charset="utf-8">
+    <!-- set styles on the top -->
+    <style>
+        .chart-container {
+            max-width: 800px;
+            /* border: 2px solid red; */
+            margin: 0 auto;
+            /* auto centers the div */
+
+            font-family: 'Times New Roman', Times, serif
+
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        }
+
+
+        h1 {
+            margin-left: 0px;
+            font-size: 20px;
+
+        }
+
+        h2 {
+            margin-left: 0px;
+            font-size: 18px;
+
+        }
+
+        h3 {
+            margin-left: 0px;
+            font-size: 17px;
+            font-weight: 1;
+            color: dimgray;
+
+        }
+
+        .x .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .y .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .x .domain {
+            display: none;
+        }
+
+        .y .domain {
+            display: none;
+        }
+
+        .y .tick text {
+            font-size: 14px;
+            fill: #333;
+        }
+
+        .x .tick text {
+            font-size: 14px;
+            fill: #333;
+        }
+
+        .x.label {
+            text-transform: uppercase;
+            font-size: 13px;
+            /* font-family: Arial, Helvetica, sans-serif; */
+            letter-spacing: .02em;
+            font-weight: 100;
+        }
+
+        .note {
+            font-size: 13px;
+            font-family: 'Times New Roman', Times, serif;
+            letter-spacing: .019em;
+            font-weight: 100;
+        }
+
+        .pop-up {
+            position: absolute; 
+            border: 1px solid black;
+            border-radius: 1px;
+            line-height: 1.5;
+            width: 170px;
+            pointer-events: none;
+            background-color: white;
+            padding: 10px;
+        }
+
+        .annotation {
+            font-size: 15px;
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            font-weight: 200;
+
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <div class="chart-container">
+        <h1 class="headline">
+           Share of people who received at least one dose of COVID-19 Vaccine 
+        </h1>
+        <h2 class= "headline2">
+          Updated on May 26, 2021
+        </h2>
+        <h3 class= "headline2">
+          More information on the bubble, the size of which is based on the total cases in the country
+        </h3>
+
+
+        <svg width="800px" height="600px">
+
+        </svg>
+
+
+        <div class="pop-up">
+        </div>
+
+    </div>
+</body>
+
+<!-- add your script blocks at the end -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+
+
+<script>
+    console.log(d3)
+    let width = 800;
+    let height = 500;
+
+    let svg = d3.select("body").select("svg");
+
+
+
+    d3.csv("covid_percent.csv").then(function (data) {
+        console.log("loaded")
+
+        data.forEach(function (row) {
+            row.percent_vaccinated= +row.percent_vaccinated
+            row.total_cases = +row.total_cases
+            row.gdp_per_capita = +row.gdp_per_capita
+            row.percent_fully = +row.percent_fully
+        })
+
+
+        let margin = { top: 20, right: 0, bottom: 10, left: 30 };
+
+        let x = d3.scaleLinear()
+            .domain(d3.extent(data.map(function (d) { return d.gdp_per_capita })))
+            // .domain(0, 10000)
+            .range([margin.left, width - margin.right])
+
+        let y = d3.scaleLinear()
+            .domain(d3.extent(data.map(function (d) { return d.percent_vaccinated})))
+            .range([height - margin.bottom, margin.top])
+
+        var r = d3.scaleSqrt()
+            .domain([0, d3.max(data, function (d) { return d.total_cases; })])
+            .range([5, 70]); // size of the circle
+
+        let tickLabels = ["10%", "20%", "30%", "40%", "50%", "60%"];
+
+        let yAxisSettings = d3.axisLeft(y) 
+            .ticks(5) 
+            .tickSize(-width) 
+            .tickFormat((d, i) => tickLabels[i])
+            .tickPadding(10) 
+
+        let xAxisSettings = d3.axisBottom(x)
+            .ticks(0)
+            .tickSize(10)
+            .tickPadding(10)
+
+        let xAxisTicks = svg.append("g")
+            .attr("class", "x axis") 
+            .call(xAxisSettings)
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+
+        // text bottom (left)
+        svg.append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "start")
+            .attr("x", margin.left)
+            .attr("y", height + 20)
+            .text("← Poorer Country");
+
+        svg.append("text")
+            .attr("class", "note")
+            .attr("text-anchor", "start")
+            .attr("x", margin.left)
+            .attr("y", height + 40)
+            .text("(with lower GDP per capital)");
+
+        // text bottom (right)
+        svg.append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "end")
+            .attr("x", width+margin.left)
+            .attr("y", height + 20)
+            .text("Richer Country →");
+
+        svg.append("text")
+            .attr("class", "note")
+            .attr("text-anchor", "end")
+            .attr("x", width+margin.left)
+            .attr("y", height + 40)
+            .text("(with higher GDP per capital)");
+        
+        // Add Source annotation
+        svg.append("text")
+            .attr("class", "Source")
+            .attr("text-anchor", "start")
+            .attr("x", margin.left-10)
+            .attr("y", height + 75)
+            .text("Source: Data from Our World in Data. Made by Iris Cheng")
+            .style("fill", "dimgrey")
+        
+
+
+        let shuffled = d3.shuffle(data); //trick
+
+        let yAxisTicks = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxisSettings)
+            .attr("transform", `translate(${margin.left},0)`)
+
+        let zeroline = svg.append("line") 
+            .attr("x1", margin.left)
+            .attr("x2", width+margin.left)
+            .attr("y1", y(0))
+            .attr("y2", y(0))
+            .style("stroke", "lightgrey")
+            .style("stroke-width", "1")
+            .style("opacity", 1)
+
+        let popup = d3.select(".pop-up");
+
+        let points = svg.append("g")
+            .selectAll(".points")
+            .data(shuffled)
+            .join("circle")
+            .attr("class", function (d) { return "points p-" + d.location }) // Give circles a class name.
+            .attr("cx", function (d) { return x(d.gdp_per_capita) }) //callback to access the data, position according to x axis
+            .attr("cy", function (d) { return y(d.percent_vaccinated) })
+            .attr("r", function (d) { return r(d.total_cases) })
+            .style("stroke", "#333333")
+            .style("stroke-width", .5)
+            .style("opacity", 1)
+            // .style("fill", "#c0cad8")
+            .style("fill", "#99dbcc")
+            .style("fill-opacity", .5)
+
+
+        points.on("mouseover", (event, d) => {
+
+            points
+                .style("stroke", "#333333")
+                .style("stroke-width", .5)
+                .style("fill", "#99dbcc")
+                .style("fill-opacity", .5)
+
+            svg.select(".p-" + d.location)
+                .style("stroke", "black")
+                .style("stroke-width", 2)
+                .style("fill", "#69b3a2")
+                .style("fill-opacity", 1)
+                .raise()
+
+            let reScaleLang = d3.scaleThreshold()
+                .domain([0]) //make sure to put this in brackets!
+                .range(["below", "above"])
+
+            let diff = +d.percent_vaccinated 
+            let fully = +d.percent_fully
+
+            let lang = "<b>"+d.location + "</b>" 
+            lang += "<br>"+ "People vaccinated: "+"<em>" + d3.format(".0%")(Math.abs(diff)) + "</em>" //"<ins>"+ "vaccinated"+ "</ins>"
+            lang += "<br>"+"Fully vaccinated: "+"<em>"+ d3.format(".0%")(Math.abs(fully))+"</em>" // "<ins>"+"fully vaccinated "+"</ins>"
+            lang += "<br>"+ "Total cases: " + "<em>"+d3.format(",d")(Math.abs(d.total_cases))+"</em>"
+
+            popup
+                .style("opacity", 1)
+                .style("left", (event.x - 40) + "px")
+                .style("top", (event.y - 150) + "px")
+                .html(lang)
+
+        })
+            
+
+            points.on("mouseout", (event, d) => {
+                // console.log(event)
+                points
+                    .style("stroke", "#333333")
+                    .style("stroke-width", .5)
+                    .style("fill", "#99dbcc")
+
+                popup
+                    .style("opacity", 0)
+
+        })
+
+
+                // text for circle
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 820)
+                .attr("y", 145)
+                .text("United States")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+                // .attr("font-weight",2);
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 840)
+                .attr("y", 390)
+                .text("Hong Kong")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 495)
+                .attr("y", 50)
+                .text("Israel")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+            
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 580)
+                .attr("y", 485)
+                .text("Japan")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+            
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 115)
+                .attr("y", 400)
+                .text("India")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 225)
+                .attr("y", 260)
+                .text("Sebia")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 208)
+                .attr("y", 90)
+                .text("Mongolia")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 385)
+                .attr("y", 355)
+                .text("Turkey")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 382)
+                .attr("y", 415)
+                .text("Russia")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 225)
+                .attr("y", 355)
+                .text("Brazil")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 290)
+                .attr("y", 472)
+                .text("Iran")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 670)
+                .attr("y", 420)
+                .text("Australia")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 520)
+                .attr("y", 230)
+                .text("Italy")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 417)
+                .attr("y", 132)
+                .text("Hungary")
+                .attr("font-size", 18)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 675)
+                .attr("y", 192)
+                .text("Germamy")
+                .attr("font-size", 14)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+    }) //end function
+
+</script>

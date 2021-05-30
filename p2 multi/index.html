@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- set styles on the top -->
+    <style>
+        .chart-container {
+            max-width: 800px;
+            /* border: 2px solid red; */
+            margin: 0 auto;
+            /* margin: auto auto; */
+            /* auto centers the div */
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        }
+
+        h1 {
+            margin-left: 0px;
+            margin-bottom: 10;
+            font-size: 20px;
+            /* border: 2px solid green; */
+        }
+
+        h2 {
+            margin-left: 0px;
+            margin-bottom: 10px;
+            margin-top: 0;
+            font-size: 17px;
+            /* border: 2px solid green; */
+        }
+
+        h3{
+            margin-left: 0px;
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-size: 17px;
+            font-weight: 5;
+            color: rgb(116, 116, 116);
+        }
+        .x .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .y .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .x .domain {
+            display: none;
+        }
+
+        .y .domain {
+            display: none;
+        }
+
+        .y .tick text {
+            font-size: 14px;
+            fill: rgb(116, 116, 116);
+            
+        }
+
+        .x .tick text {
+            font-size: 14px;
+            fill: #333;
+        }
+
+        p {
+            max-width: 550px;
+            margin-right: 100px;
+            margin-left: 0px;
+            margin-top: 10px;
+            margin-bottom: 0px;
+            font-size: 17px;
+            font-weight: 5;
+            font-family:'Times New Roman', Times, serif;
+            font-style: normal;
+            /* background-color: rgba(0,0,0,.06); */
+            color: dimgray;
+        }
+
+        .grid-example {
+            /* display: grid; */
+            /* grid-template-columns: auto auto auto; */
+            row-gap: 50px;
+            column-gap: 50px;
+        }
+
+        .img{
+            width: 100%;
+            /* height: 100%; */
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="chart-container">
+        <h1 class="headline">
+            Tracking Covid-19 vaccinations rate by country 
+        </h1>
+        <h3 class= "headline2">
+            (Charts show representative countries and world average)
+         </h3>
+        <h2 class= "headline2">
+           Doses administered per 100 people (updated on May 26)
+        </h2>
+
+        <!-- <p>
+            More than 1.7 billion vaccine doeses have been administered worldwide, but there is already a stark gap between vaccinations in different countries
+        </p> -->
+        <div class = "grid-example" width =250px>
+            <img src="Israel.svg"width =250px>
+            <img src="Bahrain.svg"width =250px>
+            <img src="USA.svg"width =250px>
+            <img src="Canada.svg"width =250px>
+            <img src="Germany.svg"width =250px>
+            <img src="Italy.svg"width =250px>
+            <img src="HK.svg"width =250px>
+            <img src="World.svg"width =250px>
+            <img src="Russia.svg"width =250px>
+            <img src="India.svg"width =250px>
+            <img src="SouthK.svg"width =250px>
+            <img src="Japan.svg"width =250px>
+        </div>
+        <p>Source: Data from Our World in Data; Made by Iris Cheng</p>
+        
+    </div>
+</body>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+
+<script>
+
+
+</script>
+
+
+
+

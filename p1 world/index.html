@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- set styles on the top -->
+    <style>
+        .chart-container {
+            max-width: 800px;
+            /* border: 2px solid red; */
+            margin: 0 auto;
+            /* margin: auto auto; */
+            /* auto centers the div */
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        }
+
+        h1 {
+            margin-left: -10px;
+            margin-bottom: 10;
+            font-size: 20px;
+            /* border: 2px solid green; */
+        }
+
+        h2 {
+            margin-left: -10px;
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-size: 17px;
+            /* border: 2px solid green; */
+        }
+
+        h3{
+            font-size: 15px;
+            margin-left: 280px;
+        }
+        .x .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .y .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .x .domain {
+            display: none;
+        }
+
+        .y .domain {
+            display: none;
+        }
+
+        .y .tick text {
+            font-size: 14px;
+            fill: rgb(116, 116, 116);
+            
+        }
+
+        .x .tick text {
+            font-size: 14px;
+            fill: #333;
+        }
+
+        p {
+            max-width: 550px;
+            margin-right: 100px;
+            margin-left: -10px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 18px;
+            font-weight: 5;
+            font-family:'Times New Roman', Times, serif;
+            font-style: normal;
+            background-color: rgba(0,0,0,.06);
+            color: dimgray;
+        }
+
+
+        .chart-notes{
+            font-size: 17px;
+            margin-top: 20px;
+            background-color:white;
+            color: "#b8b8b8";
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="chart-container">
+        <h1 class="headline">
+            Total Covid-19 vaccinations administrated worldwide
+        </h1>
+        <h2 class= "headline2">
+            Updated on May 26, 2021
+        </h2>
+        <p>
+            More than 1.7 billion vaccine doeses have been administered worldwide, but there is already a stark gap between vaccinations in different countries
+        </p>
+        <svg width="800px" height="400px">
+
+        </svg>
+    </div>
+</body>
+<hr>
+<div class="chart-container">
+    <h1 class="chart-headline">
+        World Map of Covid-19 Vaccinations
+    </h1>
+    <h2 class= "headline2">
+        Updated on May 26, 2021
+    </h2>
+    <h3 class="chart-subtitle">
+        Doses administered per 100 people 
+    </h3>
+    <object data="worldmap.svg" width=800px></object>
+    <!-- <svg id="bar-chart" width="800px" height="600px"> -->
+
+    </svg>
+    <p class="chart-notes">
+        Source: Data from New York Times. Made by Iris Cheng
+    </p>
+</div>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+
+<script>
+    console.log({ d3 })
+    //https://observablehq.com/@mbostock/global-temperature-trends
+
+    let width = 700;
+    let height = 300;
+
+    let svg = d3.select("body")
+        .select("svg")
+
+    console.log(svg)
+
+
+    //console.log
+
+    //arrays
+    //objects
+    //functions
+
+    d3.csv("covid.csv").then(function (data) {
+
+        //when temp is loaded, then pass data into this block
+        //all references to the data need to be in this block
+
+        //d3.csv is part of a suite of other functions that can do json, xml, tsv too.  
+        //https://github.com/d3/d3-fetch
+
+
+        data.forEach(function (row) {
+            row.date = new Date( row.date + "T00:00")
+            row.total_vaccinations = +row.total_vaccinations
+        })
+
+        
+
+        console.log(data)
+
+
+        let margin = { top: 0, right: 0, bottom: 0, left: 0 };
+
+        //d3 scales for the x and y axis
+        //domain takes the data we have and maps them into SVG space
+        //in this case we need to use scaleTime because we're dealin time data
+        let x = d3.scaleTime()
+            .domain(d3.extent(data.map(function (d) { return d.date }))) //d3 extent
+            // .domain([new Date(2020, 11, 20), new Date(2021, 05, 24)])
+            .range([margin.left, width - margin.right])
+
+        //in this case we need to use scaleLinear because we're dealin linear data
+        let y = d3.scaleLinear()
+            .domain(d3.extent(data.map(function (d) { return d.total_vaccinations})))
+            .range([height - margin.bottom, margin.top])
+
+
+        //define the settings for our axes
+        //https://github.com/d3/d3-axis
+        // https://github.com/d3/d3-time-format
+        //https://github.com/d3/d3-format
+        let yAxisSettings = d3.axisLeft(y) //set axis to the left
+            // .tickValues([500000000, 1000000000, 1500000000])
+            .ticks(4) //approx how many ticks, the function will not necesarily give you that number
+            .tickSize(-width) //size of tick lines
+            .tickFormat(function(d){return d/1000000000 + " billion"})
+            // .tickFormat(d3.format("+.0%")) //what format do you want https://github.com/d3/d3-format 
+            .tickPadding(10) //distance from tick labels to tick marks
+            
+
+        let xAxisSettings = d3.axisBottom(x)
+            // .tickValues([new Date(2020, 11, 20), new Date(2021, 04, 26)])
+            .ticks(0)
+            .tickSize(10)
+            .tickPadding(10)
+            .tickFormat(d3.timeFormat("%B %d %Y"))
+
+        let bg = svg.append("rect")
+            .attr("x", margin.left)
+            .attr("y", 0)
+            .attr("width", width)
+            .attr("height", height)
+            .style("fill", "white")
+
+        //adding to the axes to our chart
+        let xAxisTicks = svg.append("g")
+            .attr("class", "x axis") //give each axis a class
+            .call(xAxisSettings)
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            
+
+
+        let yAxisTicks = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxisSettings)
+            .attr("transform", `translate(${margin.left, 0})`)
+            .style("stroke-dasharray",("3,3"))
+            .style("text-anchor", "start") // start of the yxis text
+
+        // let line = d3.line() //define a line function
+        //     .defined(d => !isNaN(d.people_vaccinated))
+        //     .x(function (d) { return x(d.date) }) //accessing date 
+        //     .y(function (d) { return y(d.people_vaccinated) }) //accesssing value 
+        
+        // let area = d3.area() 
+        //     .defined(d => !isNaN(d.people_vaccinated))
+        //     .x(function (d) { return x(d.date) }) //accessing date 
+        //     .y0(y(0)) //accesssing at baseline
+        //     .y1(function (d) { return y(d.people_vaccinated) }) //accesssing value 
+
+
+        // let line_path = svg.append("path") 
+        //     .attr("class", "area") 
+        //     .attr("d", area(data))
+        //     .style("fill", "lightgreen")
+        //     .style("stroke", "none")
+        //     .style("fill-opacity", ".5")
+
+        // add the line
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", "#69b3a2")
+            .attr("stroke-width", 4)
+            .attr("d", d3.line()
+                .x(function(d) { return x(d.date) })
+                .y(function(d) { return y(d.total_vaccinations) })
+                )
+        
+        // add the area
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "#69b3a2")
+            .attr("fill-opacity", .3)
+            .attr("stroke", "none")
+            .attr("d", d3.area()
+                .x(function(d) { return x(d.date) })
+                .y0( height )
+                .y1(function(d) { return y(d.total_vaccinations) })
+                )
+        
+
+        // add  dot circle
+        svg.selectAll("myCircles") // last big dot
+            .data(data)
+            .enter()
+            .append("circle")
+                .attr("fill", "#69b3a2")
+                .attr("stroke", "none")
+                .attr("cx", 699)
+                .attr("cy", 0)
+                .attr("r", 5)
+
+        svg.selectAll("dot") // every small dot
+            .data(data)
+            .enter()
+            .append("circle")
+                .attr("class", "dot")
+                .attr("r",3)
+                .attr("cx", function(d) { return x(d.date); })
+                .attr("cy", function(d) { return y(d.total_vaccinations); })
+                .attr("fill", "#69b3a2")
+
+        // add text
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 600)
+            .attr("y", 0)
+            .text("1.78 billion")
+            .style("fill", "#69b3a2")
+            .style("font-size", "20px")
+        
+        // add x label
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 0)
+            .attr("y", 325)
+            .text("Dec 2, 2020")
+            .style("fill", "dimgrey")
+        
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 610)
+            .attr("y", 325)
+            .text("May 26, 2021")
+            .style("fill", "dimgrey")
+        
+        // Add Source annotation
+        svg.append("text")
+            .attr("class", "note")
+            .attr("text-anchor", "start")
+            .attr("x", margin.left)
+            .attr("y", height + 60)
+            .text("Source: Data from Our World in Data. Made by Iris Cheng")
+            // .style("fill", "#b8b8b8")
+            .style("fill", "dimgrey")
+
+        let baseline = svg.append("line")
+        .attr("x1", margin.left)
+        .attr("x2", width + margin.left)
+        .attr("y1", y(0))
+        .attr("y2", y(0))
+        .style("stroke", "lightgrey")
+        .style("stroke-width", "2px")
+
+
+
+
+    })
+
+</script>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .chart-container {
+            max-width: 1050px;
+            /* border: 3px solid red; */
+            margin: 0 auto;
+            /* auto centers the div */
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        }
+
+        .img {
+            margin-top: 50px;
+        }
+
+        .popup {
+            position: absolute;
+            border: 1px solid black;
+            border-radius: 1px;
+            line-height: 1.2;
+            width: 160px;
+            background-color: white;
+            padding: 10px;
+            opacity: 0;
+            text-align: left;
+        }
+
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            text-align: center;
+            /* width: 50%; */
+        }
+
+        h1 {
+            /* border: 2px solid green; */
+            font-size: 20px;
+            margin-left: 100px;
+            /* text-align: left; */
+        }
+
+        h2 {
+            margin-left: 100px;
+            font-size: 18px;
+
+        }
+        
+        h3 {
+            margin-left: 100px;
+            font-size: 17px;
+            color: dimgrey;
+            font-weight: 1;
+            margin-bottom: 20px;
+
+        }
+        /* .block-left {
+            width: 50%;
+            float: left;
+            /* margin-left: 50px;             */
+        /* }
+
+        .block-right {
+            width: 50%;
+            float: right;
+            margin-right: 0px;
+        } */ 
+
+        .itl {
+            font-style: normal;
+            color: dimgray;
+            margin-left: 50px;
+        }
+
+    </style>
+    <!-- add your script blocks at the end -->
+
+</head>
+
+<body>
+    <!-- <div class="chart-container"> -->
+    <div>
+    <h1 class="headline">
+        How Covid-19 vaccinations are going in the United States
+    </h1>
+    <h2 class= "headline2">
+        Updated on May 28, 2021
+      </h2>
+    <h3>
+        Including detailed information of people age 12+, 18+, and 65+
+    </h3>
+    <div class="center">
+        <div ><img class="center" src='simple-key.svg'></img></div>
+        
+        <svg class="center" width="1050px" height="800px">
+
+        </svg>
+        <div class="popup"></div>    
+        <!-- </div> -->
+        </div>
+        <div class="center">
+            <div class="block-left">
+                <p class='itl'> 
+                    Source: Data from New York Times and Our World in Data. Made by Iris Cheng 
+                <br>No data for Hawaii, Texas and some counties (Color in grey)</p>
+            </div>
+            <!-- <div class="block-right"><p class='itl'>Map by Iris Cheng</p></div> -->
+        </div>
+    </div>
+    
+</body>
+
+
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
+<!-- load topojson script -->
+<script src="https://unpkg.com/topojson@3"></script>
+
+<script>
+    let width = 1050;
+    let height = 800;
+    let svg = d3. select('body').select('svg')
+
+    let margin = { top: 0, right: 10, bottom: 0, left: 50 };
+
+    d3.json("output.json").then(function (data) {
+        // console.log("loaded")
+        console.log(data)
+
+        let county = topojson.feature(data, data.objects.county)
+        let state = topojson.feature(data, data.objects.cb_2018_us_state_20m)
+        // console.log(counties)
+
+        let projection = d3.geoIdentity()
+            .fitSize([width, height], state)
+            .reflectY(true)
+        
+        let path = d3.geoPath(projection)
+
+        svg.append("g")
+            .attr("class", "states")
+            .selectAll("path")
+            .data(state.features)
+            .join("path")
+            .attr("d", path)
+            .attr("fill", "lightgrey")
+            .attr("stroke", "white")
+
+
+        let states = svg
+            .append("path")
+            .attr("d", path)
+            .style("fill", "none")
+            .style("stroke", "#333")
+            .style("stroke-width", 1)
+            .style("pointer-events", "none")
+
+        // // let scaleFunction = d3.scaleSqrt()
+        // //     .domain([0, 100000])
+        // //     .range([0, 15])
+
+        // //Geo_QName = county AND state
+
+        let counties = svg
+            .selectAll(".counties")
+            .data(county.features)
+            .join("path")
+            .attr("d", path)
+
+            .attr("class", function (d) {return "counties p-" + d.properties.GEOID})
+
+            .style("fill", d => {
+                return d.properties.fill
+            })
+            .style("stroke", "white")
+            .style("opacity", 0.8)
+            .style("stroke-width", .5)
+            // .style("pointer-events", "none")
+
+        // // // let ctys = d3.selectAll(".counties")
+        let popup = d3.select(".popup")
+
+            counties.on("mouseover", (pointer_event, d) => {
+                svg.select(".p-" + d.properties.GEOID)
+                .style("stroke-width", 3)
+                .style("opacity", 1)
+                .raise()
+
+            // Pop up text
+            let lang = "<font size=3>" +"<b>"+d.properties.name_display+ "</b>"+ "</font>"
+            lang += "<color=dimgrey>"+"<font size=2>" +"<br>"+"Pct. fully vaccinated"+ "</font>"+"</color>"
+            lang += "<br>"+"All residents:   "+ d.properties.cty_people_fully_vaccinated_pct_of_pop_display
+            lang += "<br>"+"Age 12+:      "+ d.properties.cty_people_fully_vaccinated_12plus_pct_of_pop_display
+            lang += "<br>"+"Age 18+:      "+ d.properties.cty_people_fully_vaccinated_18plus_pct_of_pop_display
+            lang += "<br>"+"Age 65+:      "+ d.properties.cty_people_fully_vaccinated_65plus_pct_of_pop_display
+
+            popup  
+                    .style("opacity", 1)
+                    .style("left", (pointer_event.x) + "px")
+                    .style("top", (pointer_event.y) + "px")
+                    .html(lang)
+            })
+
+            counties.on("mouseout", (pointer_event, d) => {
+                svg.select(".p-" + d.properties.GEOID)
+                    .style("stroke-width", 0.2)
+                    // .style("opacity", 0.2)
+                    .raise()
+                
+                popup
+                    .style("opacity", 0)
+            })
+
+
+
+    })
+
+
+
+</script>
