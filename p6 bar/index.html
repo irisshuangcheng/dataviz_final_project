@@ -26,15 +26,21 @@
 
         }
 
-        h2 {
+        h2{
+            font-size: 18px;
+            font-weight: 7px;
+        }
+        h3 {
             margin-left: 0px;
             font-size: 18px;
             margin-bottom: 0;
+            font-weight: 1;
         }
 
         p{
             color: dimgray;
             margin-top: -50px;
+            font-size: 17px;
         }
         
         .x .domain {
@@ -55,22 +61,38 @@
             font-size: 14px;
             fill:rgb(133, 133, 133);
         }
+
+        .chart-para{
+            color: black;
+            background-color:white;
+            max-width:600px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+
+        }
     </style>
 </head>
 
 <body>
     <div class="chart-container">
-        <h1 class="headline">
+        <h1>
+            What share of the population has been partly or fully vaccinated against COVID-19?
+        </h1>
+
+        <h2 class="headline">
             Share of people who received at least one dose of COVID-19 Vaccine 
-         </h1>
-         <h2 >
-           Updated on May 26, 2021
          </h2>
+         <h3 >
+           Updated on May 26, 2021
+         </h3>
 
         <svg width="800px" height="500px">
         </svg>
 
         <p>Source: Data from Our World in Data. Made by Iris Cheng</p>
+        <p class = "chart-para">
+            A vaccinated person refers to someone who has received at least one dose of a vaccine, and a fully vaccinated person has received all required doses of a vaccine. 
+            <br> The vaccination rate of world average is far below that of rich country. 
     </div>
 </body>
 

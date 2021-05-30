@@ -70,10 +70,11 @@
 
         .x.label {
             text-transform: uppercase;
-            font-size: 13px;
+            font-size: 15px;
             /* font-family: Arial, Helvetica, sans-serif; */
             letter-spacing: .02em;
-            font-weight: 100;
+            font-weight: bold;
+            margin-top: 10px;
         }
 
         .note {
@@ -94,13 +95,17 @@
             padding: 10px;
         }
 
-        .annotation {
+        p{
+            color:dimgray;
+            margin-top: 14px;
+        }
+        /* .annotation {
             font-size: 15px;
             font-family: 'Times New Roman', Times, serif;
             font-style: italic;
             font-weight: 200;
 
-        }
+        } */
     </style>
 </head>
 
@@ -116,12 +121,19 @@
         </h2>
         <h3 class= "headline2">
           More information on the bubble, the size of which is based on the total cases in the country
+
         </h3>
 
-
-        <svg width="800px" height="600px">
+        <svg width="800px" height="550px">
 
         </svg>
+
+        <p>
+            Source: Data from Our World in Data. Made by Iris Cheng
+        </p>
+        <p>
+            Note: This data is only available for countries which report the breakdown of doses administered by first and second doses.
+        </p>
 
 
         <div class="pop-up">
@@ -193,14 +205,15 @@
             .attr("class", "x label")
             .attr("text-anchor", "start")
             .attr("x", margin.left)
-            .attr("y", height + 20)
-            .text("← Poorer Country");
+            .attr("y", height + 25)
+            .text("← Poorer Country")
+            // .attr("font-size", "20px")
 
         svg.append("text")
             .attr("class", "note")
             .attr("text-anchor", "start")
             .attr("x", margin.left)
-            .attr("y", height + 40)
+            .attr("y", height + 45)
             .text("(with lower GDP per capital)");
 
         // text bottom (right)
@@ -208,24 +221,24 @@
             .attr("class", "x label")
             .attr("text-anchor", "end")
             .attr("x", width+margin.left)
-            .attr("y", height + 20)
+            .attr("y", height + 25)
             .text("Richer Country →");
 
         svg.append("text")
             .attr("class", "note")
             .attr("text-anchor", "end")
             .attr("x", width+margin.left)
-            .attr("y", height + 40)
+            .attr("y", height + 45)
             .text("(with higher GDP per capital)");
         
         // Add Source annotation
-        svg.append("text")
-            .attr("class", "Source")
-            .attr("text-anchor", "start")
-            .attr("x", margin.left-10)
-            .attr("y", height + 75)
-            .text("Source: Data from Our World in Data. Made by Iris Cheng")
-            .style("fill", "dimgrey")
+        // svg.append("text")
+        //     .attr("class", "Source")
+        //     .attr("text-anchor", "start")
+        //     .attr("x", margin.left-10)
+        //     .attr("y", height + 75)
+        //     .text("Source: Data from Our World in Data. Made by Iris Cheng")
+        //     .style("fill", "dimgrey")
         
 
 

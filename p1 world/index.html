@@ -68,9 +68,9 @@
         p {
             max-width: 550px;
             margin-right: 100px;
-            margin-left: -10px;
-            margin-top: 0px;
-            margin-bottom: 0px;
+            margin-left: 0px;
+            margin-top: 10px;
+            margin-bottom: 10px;
             font-size: 18px;
             font-weight: 5;
             font-family:'Times New Roman', Times, serif;
@@ -85,6 +85,16 @@
             margin-top: 20px;
             background-color:white;
             color: "#b8b8b8";
+            max-width:800px;
+        }
+
+        .chart-para{
+            color: black;
+            background-color:white;
+            max-width:800px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+
         }
 
     </style>
@@ -101,9 +111,19 @@
         <p>
             More than 1.7 billion vaccine doeses have been administered worldwide, but there is already a stark gap between vaccinations in different countries
         </p>
-        <svg width="800px" height="400px">
+
+        
+        <svg width="800px" height="320px">
 
         </svg>
+        <p class="chart-notes">
+            Source: Data from New York Times. Made by Iris Cheng
+        </p>
+        <p class = "chart-para">
+            Within less than 12 months after the beginning of the COVID-19 pandemic, several research teams rose to the challenge and developed vaccines that protect from SARS-CoV-2, the virus that causes COVID-19.
+        </p>
+
+
     </div>
 </body>
 <hr>
@@ -124,6 +144,12 @@
     <p class="chart-notes">
         Source: Data from New York Times. Made by Iris Cheng
     </p>
+
+    <p class = "chart-para">
+        Now the challenge is to make these vaccines available to people around the world. It will be key that people in all countries — not just in rich countries — receive the required protection.
+    </p>
+
+
 </div>
 
 <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -314,14 +340,14 @@
             .style("fill", "dimgrey")
         
         // Add Source annotation
-        svg.append("text")
-            .attr("class", "note")
-            .attr("text-anchor", "start")
-            .attr("x", margin.left)
-            .attr("y", height + 60)
-            .text("Source: Data from Our World in Data. Made by Iris Cheng")
-            // .style("fill", "#b8b8b8")
-            .style("fill", "dimgrey")
+        // svg.append("text")
+        //     .attr("class", "note")
+        //     .attr("text-anchor", "start")
+        //     .attr("x", margin.left)
+        //     .attr("y", height + 60)
+        //     .text("Source: Data from Our World in Data. Made by Iris Cheng")
+        //     // .style("fill", "#b8b8b8")
+        //     .style("fill", "dimgrey")
 
         let baseline = svg.append("line")
         .attr("x1", margin.left)

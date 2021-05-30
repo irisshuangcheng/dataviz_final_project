@@ -88,6 +88,7 @@
 
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <!-- we're using d3 version 6 (the latest version) for all out work -->
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 
 <script>
     console.log({ d3 })
@@ -401,6 +402,67 @@
 
             })
 
+            svg.append('circle')
+                .attr("cx", function (d) { return x(new Date(2021, 04, 04)); })
+                .attr("cy", function (d) { return y(0.44680812174894785); })
+                .attr("r",  6)
+                .style('fill', "#b2dbc4")
+                .attr("stroke", "black")
+                .style("opacity", "0.85")
+                .style("stroke-width", "2")
+
+            const annotations1 = [{
+                note: {
+                label: "Biden set a goal on May 4 of reaching 70% of adults by July 4",
+                wrap:220,
+                align: "left"
+                },
+                connector:{
+                end:"arrow",
+                type:"line"
+                },
+                color:["dimgrey"],
+                x:680,
+                y:155,
+                dy:0,
+                dx:-280
+            }
+            ] 
+            // Add annotation to the chart
+            const makeAnnotations = d3.annotation()
+            .annotations(annotations1)
+            d3.select("svg")
+            .append("g")
+            .call(makeAnnotations)
+
+
     })
 
 </script>
+
+<!-- <script>
+            const annotations1 = [{
+                note: {
+                label: "Richer districts tend to have higher scores",
+                wrap:150,
+                align: "left"
+                },
+                connector:{
+                end:"arrow",
+                type:"curve"
+                },
+                color:["black"],
+                x:340,
+                y:130,
+                dy:140,
+                dx:200
+            }
+            ] 
+            // Add annotation to the chart
+            const makeAnnotations = d3.annotation()
+            .annotations(annotations1)
+            d3.select("svg")
+            .append("g")
+            .call(makeAnnotations)
+
+</script> -->
