@@ -24,7 +24,7 @@
 
         h1 {
             margin-left: 0px;
-            font-size: 20px;
+            font-size: 23px;
 
         }
 
@@ -36,7 +36,7 @@
 
         h3 {
             margin-left: 0px;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 1;
             color: dimgray;
 
@@ -99,6 +99,24 @@
             color:dimgray;
             margin-top: 14px;
         }
+
+        .chart-notes{
+            font-size: 18px;
+            margin-top: 20px;
+            background-color:white;
+            color: "#b8b8b8";
+            max-width:800px;
+        }
+
+        .chart-para{
+            color: black;
+            background-color:white;
+            max-width:800px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 18px;
+
+        }
         /* .annotation {
             font-size: 15px;
             font-family: 'Times New Roman', Times, serif;
@@ -114,13 +132,17 @@
 <body>
     <div class="chart-container">
         <h1 class="headline">
-           Share of people who received at least one dose of COVID-19 Vaccine 
+            Vaccination rates varies from country income level
+            
         </h1>
         <h2 class= "headline2">
-          Updated on May 26, 2021
+            Share of people who received at least one dose of COVID-19 Vaccine
+        </h2>
+        <h2>
+            (Updated on May 26, 2021)
         </h2>
         <h3 class= "headline2">
-          More information on the bubble, the size of which is based on the total cases in the country
+          More information on the bubble. Bubble sized by total cases in the country
 
         </h3>
 
@@ -128,13 +150,15 @@
 
         </svg>
 
-        <p>
+        <p class="chart-notes">
             Source: Data from Our World in Data. Made by Iris Cheng
-        </p>
-        <p>
-            Note: This data is only available for countries which report the breakdown of doses administered by first and second doses.
+            <br> Note: This data is only available for countries which report the breakdown of doses administered by first and second doses.
         </p>
 
+        <p class = "chart-para">
+            85 percent of shots that have gone into arms worldwide have been administered in high- and upper-middle-income countries. 
+            Only 0.3 percent of doses have been administered in low-income countries.
+        </p>
 
         <div class="pop-up">
         </div>
@@ -189,6 +213,7 @@
             .tickSize(-width) 
             .tickFormat((d, i) => tickLabels[i])
             .tickPadding(10) 
+            
 
         let xAxisSettings = d3.axisBottom(x)
             .ticks(0)
@@ -199,6 +224,12 @@
             .attr("class", "x axis") 
             .call(xAxisSettings)
             .attr("transform", `translate(0,${height - margin.bottom})`)
+        
+        let yAxisTicks = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxisSettings)
+            .attr("transform", `translate(${margin.left},0)`)
+            .style("stroke-dasharray",("3,3"))
 
         // text bottom (left)
         svg.append("text")
@@ -244,19 +275,80 @@
 
         let shuffled = d3.shuffle(data); //trick
 
-        let yAxisTicks = svg.append("g")
-            .attr("class", "y axis")
-            .call(yAxisSettings)
-            .attr("transform", `translate(${margin.left},0)`)
-
         let zeroline = svg.append("line") 
             .attr("x1", margin.left)
             .attr("x2", width+margin.left)
             .attr("y1", y(0))
             .attr("y2", y(0))
             .style("stroke", "lightgrey")
-            .style("stroke-width", "1")
+            .style("stroke-width", "2")
             .style("opacity", 1)
+        
+        // world average line
+        let worldline = svg.append("line") 
+            .attr("x1", function (d) { return x(15469.207); })
+            .attr("x2", function (d) { return x(15469.207); })
+            .attr("y1", y(0))
+            .attr("y2", 40)
+            .style("stroke", "lightgrey")
+            .style("stroke-width", "2")
+            .style("opacity", 1)
+            .style("stroke-dasharray",("3,3"))
+        
+        svg.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "end")
+                .attr("x", 300)
+                .attr("y", 35)
+                .text("GDP (world avg.)") // world annotation
+                .attr("font-size", 16)
+                // .attr("stroke", "#8c8c8c")
+                .attr("fill", "#8c8c8c")
+
+        svg.append('circle')
+                .attr("cx", function (d) { return x(15469.207); })
+                .attr("cy", function (d) { return y(0.10233141); })
+                .attr("r", 5)
+                .style('fill', 'dimgrey')
+                .attr("stroke", "dimgrey")
+                .style("opacity", "0.85")
+                .style("stroke-width", "4")
+        
+        svg.append('circle')
+                .attr("cx", function (d) { return x(54225.446); })
+                .attr("cy", function (d) { return y(0.49518585); })
+                .attr("r", 72)
+                .style('fill', 'white')
+                .attr("stroke", "dimgrey")
+                .style("opacity", "0.85")
+                .style("stroke-width", "4")
+        
+        svg.append('circle')
+                .attr("cx", function (d) { return x(6426.674); })
+                .attr("cy", function (d) { return y(0.110363058737672); })
+                .attr("r", 66)
+                .style('fill', 'white')
+                .attr("stroke", "dimgrey")
+                .style("opacity", "0.85")
+                .style("stroke-width", "4")
+
+        svg.append('circle')
+                .attr("cx", function (d) { return x(33132.32); })
+                .attr("cy", function (d) { return y(0.628994537); })
+                .attr("r", 17)
+                .style('fill', 'white')
+                .attr("stroke", "dimgrey")
+                .style("opacity", "0.85")
+                .style("stroke-width", "4")
+
+        svg.append('circle')
+                .attr("cx", function (d) { return x(39002.223); })
+                .attr("cy", function (d) { return y(0.0522695219690608); })
+                .attr("r", 17)
+                .style('fill', 'white')
+                .attr("stroke", "dimgrey")
+                .style("opacity", "0.85")
+                .style("stroke-width", "4")
 
         let popup = d3.select(".pop-up");
 
@@ -476,6 +568,9 @@
                 .attr("font-size", 14)
                 // .attr("stroke", "#8c8c8c")
                 .attr("fill", "#8c8c8c")
+
+            // highlight
+
 
     }) //end function
 

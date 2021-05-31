@@ -20,7 +20,7 @@
 
         h1 {
             margin-left: 0px;
-            font-size: 20px;
+            font-size: 23px;
 
         }
 
@@ -29,6 +29,31 @@
             font-size: 17px;
         }
 
+        h3{
+            font-size: 17px;
+        }
+        p{
+            font-size: 17px;
+            color: dimgray;
+            margin-top: 0px;
+        }
+
+        .chart-notes{
+            font-size: 17px;
+            margin-top: 20px;
+            background-color:white;
+            color: "#b8b8b8";
+            max-width:800px;
+        }
+
+        .chart-para{
+            color: black;
+            background-color:white;
+            max-width:800px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+
+        }
         .x .tick line {
             stroke: rgba(0, 0, 0, .2);
         }
@@ -72,15 +97,28 @@
 <body>
     <div class="chart-container">
         <h1 class="headline">
-            Share of people who received at least one dose of COVID-19 Vaccine 
+            How fast are countries vaccinating?
          </h1>
+         <h3>
+            Updated on May 26, 2021
+         </h3>
          <h2 class= "headline2">
-           Updated on May 26, 2021
+            The trend of share of people who received at least one dose of COVID-19 Vaccine 
          </h2>
 
-        <svg width="1050px" height="1000px">
+
+        <svg width="1050px" height="550px">
 
         </svg>
+
+        <p class="chart-notes">
+            Source: Data from New York Times. Made by Iris Cheng
+        </p>
+        <p class = "chart-para">
+            70 to 90% percent of the total population needs to acquire resistance to the Covid-19 to reach herd immunity.
+            A number of factors determine how quickly this threshold is met.
+        </p>
+
         <div class="pop-up">
         </div>
     </div>
@@ -192,13 +230,13 @@
         //     .y(function (d) { return y(d.percent_vaccinated) }) //accesssing value 
 
         // Add Source annotation
-        svg.append("text")
-            .attr("class", "Source")
-            .attr("text-anchor", "start")
-            .attr("x", margin.left-10)
-            .attr("y", height + 75)
-            .text("Source: Data from Our World in Data. Made by Iris Cheng")
-            .style("fill", "dimgrey")
+        // svg.append("text")
+        //     .attr("class", "Source")
+        //     .attr("text-anchor", "start")
+        //     .attr("x", margin.left-10)
+        //     .attr("y", height + 75)
+        //     .text("Source: Data from Our World in Data. Made by Iris Cheng")
+        //     .style("fill", "dimgrey")
 
         let grouped_data = d3.group(data, d => d.location);
 
@@ -439,30 +477,3 @@
     })
 
 </script>
-
-<!-- <script>
-            const annotations1 = [{
-                note: {
-                label: "Richer districts tend to have higher scores",
-                wrap:150,
-                align: "left"
-                },
-                connector:{
-                end:"arrow",
-                type:"curve"
-                },
-                color:["black"],
-                x:340,
-                y:130,
-                dy:140,
-                dx:200
-            }
-            ] 
-            // Add annotation to the chart
-            const makeAnnotations = d3.annotation()
-            .annotations(annotations1)
-            d3.select("svg")
-            .append("g")
-            .call(makeAnnotations)
-
-</script> -->
